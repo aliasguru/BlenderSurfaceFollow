@@ -489,10 +489,3 @@ class SurfaceFollowPanel(bpy.types.Panel):
         if not bpy.context.scene.surface_follow_on:
             col.prop(bpy.context.scene , "surface_follow_frame", text = "Frame Update", icon = 'PLAY')
 
-
-#    register only the properties here
-def register():
-    create_properties()
-
-def unregister():
-    remove_properties()

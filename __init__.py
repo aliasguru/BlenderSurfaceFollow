@@ -16,14 +16,24 @@ bl_info = {
     "wiki_url": "",
     "category": '3D View'}
 
-import bpy
+
+if 'bpy' in locals():
+	import importlib
+	for m in [Gizmo, Properties, SurfaceFollow, TextureHack, UVShape]:
+		importlib.reload(m)
+
+else:
+	import bpy
+	from . import Properties
 
 
 
 def register():
+	Properties.create_properties()
 	bpy.utils.register_module()
 
 def unregister():
+	Properties.remove_properties()
 	bpy.utils.unregister_module()
 
 if __name__ == '__main__':
