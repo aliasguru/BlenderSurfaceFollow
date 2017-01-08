@@ -482,8 +482,8 @@ class SurfaceFollowPanel(bpy.types.Panel):
         layout = self.layout
         col = layout.column(align = True)
         col.label(text = "Surface Follow")
-        col.operator("scene.bind_to_surface", text = "Bind to Surface")
-        col.operator("scene.surface_update_once", text = "Update Once", icon = 'RECOVER_AUTO')
+        col.operator(BindToSurface.bl_idname, text = "Bind to Surface")
+        col.operator(UpdateOnce.bl_idname, text = "Update Once", icon = 'RECOVER_AUTO')
         if not bpy.context.scene.surface_follow_frame:
             col.prop(bpy.context.scene , "surface_follow_on", text = "Scene Update", icon = 'SCENE_DATA')
         if not bpy.context.scene.surface_follow_on:
