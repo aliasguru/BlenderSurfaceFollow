@@ -2,18 +2,6 @@
 #    If there are weird bind errors like the mesh is not deforming correctly, compare
 #    the oct version of closest triangles to the one without oct
 
-
-bl_info = {
-    "name": "Surface Follow",
-    "author": "Rich Colburn, email: the3dadvantage@gmail.com",
-    "version": (1, 0),
-    "blender": (2, 78, 0),
-    "location": "View3D > Extended Tools > Surface Follow",
-    "description": "Doforms an object as the surface of another object changes",
-    "warning": "Do not use if you are pregnant or have ever met someone who was pregnant",
-    "wiki_url": "",
-    "category": '3D View'}
-
 import bpy
 import numpy as np
 np.seterr(all = 'ignore')
@@ -447,26 +435,8 @@ def toggle_display(self, context):
         remove_handler('scene')
         remove_handler('frame')
 
-#    Properties-----------------------------------:
-def create_properties():
 
-    bpy.types.Scene.surface_follow_on = bpy.props.BoolProperty(name = "Scene Update",
-        description = "For toggling the dynamic tension map",
-        default = False, update = toggle_display)
 
-    bpy.types.Scene.surface_follow_frame = bpy.props.BoolProperty(name = "Frame Update",
-        description = "For toggling the dynamic tension map",
-        default = False, update = toggle_display)
-
-    bpy.types.Scene.surface_follow_data_set = {}
-    bpy.types.Scene.surface_follow_data_set['surfaces'] = {}
-    bpy.types.Scene.surface_follow_data_set['objects'] = {}
-
-def remove_properties():
-    '''Walks down the street and gets me a coffee'''
-    del(bpy.types.Scene.surface_follow_on)
-    del(bpy.types.Scene.surface_follow_frame)
-    del(bpy.types.Scene.surface_follow_data_set)
 
 #    Create Classes-------------------------------:
 
@@ -519,22 +489,10 @@ class SurfaceFollowPanel(bpy.types.Panel):
         if not bpy.context.scene.surface_follow_on:
             col.prop(bpy.context.scene , "surface_follow_frame", text = "Frame Update", icon = 'PLAY')
 
-#    Register Clases -------------->>>
 
+#    register only the properties here
 def register():
     create_properties()
-    bpy.utils.register_class(SurfaceFollowPanel)
-    bpy.utils.register_class(BindToSurface)
-    bpy.utils.register_class(UpdateOnce)
-    bpy.utils.register_class(ToggleSurfaceFollow)
-
 
 def unregister():
     remove_properties()
-    bpy.utils.unregister_class(BindToSurface)
-    bpy.utils.unregister_class(UpdateOnce)
-    bpy.utils.unregister_class(ToggleSurfaceFollow)
-    bpy.utils.unregister_class(SurfaceFollowPanel)
-
-if __name__ == "__main__":
-    register()
