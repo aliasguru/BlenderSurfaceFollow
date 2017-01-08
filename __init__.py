@@ -19,7 +19,7 @@ bl_info = {
 
 if 'bpy' in locals():
 	import importlib
-	for m in [Gizmo, Properties, SurfaceFollow, TextureHack, UVShape]:
+	for m in [Gizmo, Properties, SurfaceFollow, TextureHack, UVShape]:    #    @UndefinedVariable
 		importlib.reload(m)
 
 else:
