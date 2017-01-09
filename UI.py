@@ -10,6 +10,7 @@ class ColburnToolsBase():
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     bl_category = 'Colburn Tools'
+    bl_context = 'objectmode'
 
 
 class SurfaceFollowPanel(ColburnToolsBase, Panel):
