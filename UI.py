@@ -6,14 +6,16 @@ Created on 09.01.2017
 from bpy.types import Panel
 from . import SurfaceFollow, TextureHack, UVShape
 
-class SurfaceFollowPanel(Panel):
-    """Surface Follow Panel"""
-    bl_label = "Surface Follow Panel"
-    bl_idname = "Surface Panel"
+class ColburnToolsBase():
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
-    bl_category = "Extended Tools"
-    #    gt_show = True
+    bl_category = 'Colburn Tools'
+
+
+class SurfaceFollowPanel(ColburnToolsBase, Panel):
+    """Surface Follow Panel"""
+    bl_label = "Surface Follow"
+    bl_idname = "Surface Panel"
 
     def draw(self, context):
         layout = self.layout
@@ -28,13 +30,10 @@ class SurfaceFollowPanel(Panel):
 
 
 
-class Print3DTools(Panel):
+class Print3DTools(ColburnToolsBase, Panel):
     """Creates a new tab with physics UI"""
     bl_label = "3D Print Tools"
     bl_idname = "3D Print Tools"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Extended Tools"
 
     def draw(self, context):
         layout = self.layout
@@ -50,13 +49,10 @@ class Print3DTools(Panel):
             #    col.prop(bpy.context.object, "relative_scale", text="Relative Scale", icon='FORCE_HARMONIC')
 
 
-class MoveTexturePanel(Panel):
+class MoveTexturePanel(ColburnToolsBase, Panel):
     """Creates Buttons for Line Tools"""
     bl_label = "Adjust Active Texture"
     bl_idname = "drag_textures"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Extended Tools"
 
     def draw(self, context):
         layout = self.layout
