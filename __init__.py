@@ -11,8 +11,8 @@ bl_info = {
     "version": (1, 1),
     "blender": (2, 78, 0),
     "location": "View3D > Extended Tools > Colburn Tools",
-    "description": "Doforms an object as the surface of another object changes",
-    "warning": "Do not use if you are pregnant or have ever met someone who was pregnant",
+    "description": "Doforms an object as the surface of another object changes, Creates a flattened version of the mesh as a shape key",
+    "warning": "Do not use if you are pregnant or have ever met someone who was pregnant, Everyone who has ever died did so while alive",
     "wiki_url": "",
     "category": '3D View'}
 
