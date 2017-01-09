@@ -11,10 +11,10 @@ bl_info = {
 
 import bpy
 
-import bmesh
-from bpy_extras import view3d_utils
-import mathutils
+from bpy_extras import view3d_utils    #    @UnresolvedImport
+import mathutils    #    @UnresolvedImport
 import numpy as np
+from . import Gizmo
 
 
 def rotate_around_axis(coords, Q, origin = 'empty'):
@@ -73,15 +73,15 @@ def set_active_uv_name():
     ob = bpy.context.object
     mat_name = ob.active_material.name
     tex_idx = ob.data.materials[mat_name].active_texture_index
-    ttd = bpy.context.scene.texture_transform_data
+    ttd = bpy.context.scene.texture_transform_data    #    @UndefinedVariable
     ttd['texture_index'] = tex_idx
     return bpy.data.materials[mat_name].texture_slots[tex_idx].uv_layer
 
 def initialize_transform_data():
-    sce = bpy.context.scene
+    #    sce = bpy.context.scene
     ob = bpy.context.object
     bpy.types.Scene.texture_transform_data = {}
-    ttd = bpy.context.scene.texture_transform_data
+    ttd = bpy.context.scene.texture_transform_data    #    @UndefinedVariable
     ttd['tracker_switch'] = True    #    for rotate gizmo to point at view
     ttd['static_uv'] = get_uv_coords(ob, get_active_uv_name())
     ttd['start_coords'] = np.copy(ttd['static_uv'])
@@ -222,14 +222,14 @@ def reset_rotation():
 
 def reset_move():
     set_active_uv_name()
-    ttd = bpy.context.scene.texture_transform_data
+    ttd = bpy.context.scene.texture_transform_data    #    @UndefinedVariable
     offset = bpy.context.object.active_material.texture_slots[ttd['texture_index']].offset
     offset.xy = np.array(offset.xy) - ttd['move_offset']
     ttd['move_offset'] = np.array([0.0, 0.0])
 
 def reset_scale():
     set_active_uv_name()
-    ttd = bpy.context.scene.texture_transform_data
+    ttd = bpy.context.scene.texture_transform_data    #    @UndefinedVariable
     offset = bpy.context.object.active_material.texture_slots[ttd['texture_index']].offset
     offset.xy = np.array(np.array([0.0, 0.0]))
     ttd['scale_offset'] = np.array([0.0, 0.0])
@@ -249,7 +249,7 @@ def set_uv_coords(coords, layer, ob):
     ob.data.update()
 
 def raycast(hit, success = False, uv = None, normal = None):
-    ttd = bpy.context.scene.texture_transform_data
+    ttd = bpy.context.scene.texture_transform_data    #    @UndefinedVariable
     if success:
         uv_hit = np.array(uv)[0:2]
         mesh = bpy.context.object
@@ -277,7 +277,7 @@ def raycast(hit, success = False, uv = None, normal = None):
         # -----------------------------------------------------------------
         elif ttd['type'] == 'scale':
             saved_scale_offset = np.copy(offset.xy)    #    store the offset seperately for the reset tool
-            factor = bpy.context.scene.scale_strength
+            factor = bpy.context.scene.scale_strength    #    @UndefinedVariable
             if ttd['h1'] == 'empty':
                 ttd['h1'] = np.copy(uv_hit) * image_compensate
                 ttd['current_scale'] = np.array(scale.xy)
@@ -327,7 +327,7 @@ def raycast(hit, success = False, uv = None, normal = None):
                     if np.sqrt(np.dot(dif, dif)) > 0.01:
                         ttd['h2'] = np.copy(uv_hit)
                         if 'rotate_2' not in bpy.data.objects:
-                            create_rotate_2()
+                            Gizmo.create_rotate_2()
                         bpy.data.objects['rotate_2'].hide = False
                 if ttd['h2'] != 'empty':
                     v1 = (ttd['h2'] - ttd['h1']) * image_compensate
@@ -395,13 +395,13 @@ def raycast(hit, success = False, uv = None, normal = None):
                         ttd['h2'] = np.copy(uv_hit)
                         ttd['stored_uv_coords_full'] = np.copy(rot_coords[:, :2])
                         set_uv_coords(rot_coords[:, :2], ttd['static_uv_name'], ob = bpy.context.object)
-     # ------------------------------------------------
-       # ------------------------------------------------
+
+
 
 def drag_textures():
     ob = bpy.context.object
     set_active_uv_name()    #    sets ttd['uv_name'] to the active uv map
-    ttd = bpy.context.scene.texture_transform_data
+    ttd = bpy.context.scene.texture_transform_data    #    @UndefinedVariable
     ttd['static_uv_name'] = get_active_uv_name()
     ttd['uv_offseter'] = np.array([len(i.vertices) for i in ob.data.polygons])
     ttd['stored_uv_hit'] = 'empty'
@@ -422,7 +422,7 @@ def drag_textures():
 
 def main(drag, context, event):
     """Run this function on left mouse, execute the ray cast"""
-    ttd = bpy.context.scene.texture_transform_data
+    ttd = context.scene.texture_transform_data
     obj = bpy.context.object
     scene = context.scene
     scene.objects.active = obj
@@ -562,12 +562,12 @@ class RotateTextureModal(bpy.types.Operator):
     def __init__(self):
         self.rotate = False
         drag_textures()
-        create_rotate_0()
-        ttd = bpy.context.scene.texture_transform_data
+        Gizmo.create_rotate_0()
+        ttd = bpy.context.scene.texture_transform_data    #    @UndefinedVariable
         ttd['type'] = 'rotate'
 
     def modal(self, context, event):
-        ttd = bpy.context.scene.texture_transform_data
+        ttd = context.scene.texture_transform_data
         bpy.context.scene.tex_rotate_alert = True
         ttd['tracker_switch'] = False
         if event.type in {'MIDDLEMOUSE', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE',
@@ -586,9 +586,9 @@ class RotateTextureModal(bpy.types.Operator):
 
         elif event.type == 'LEFTMOUSE' and event.value == 'PRESS':
             if 'rotate_1' not in bpy.data.objects:
-                create_rotate_1()
+                Gizmo.create_rotate_1()
 
-            ttd = bpy.context.scene.texture_transform_data
+            ttd = context.scene.texture_transform_data
             ttd['static_uv'] = get_uv_coords(bpy.context.object, ttd['static_uv_name'])
             ttd['stored_uv_coords_full'] = get_uv_coords(bpy.context.object, ttd['static_uv_name'])
             ttd['type'] = 'rotate'
@@ -655,12 +655,12 @@ class ScaleTextureModal(bpy.types.Operator):
     def __init__(self):
         self.scale = False
         drag_textures()
-        create_scale()
-        ttd = bpy.context.scene.texture_transform_data
+        Gizmo.create_scale()
+        ttd = bpy.context.scene.texture_transform_data    #    @UndefinedVariable
         ttd['type'] = 'scale'
 
     def modal(self, context, event):
-        ttd = bpy.context.scene.texture_transform_data
+        ttd = context.scene.texture_transform_data
         bpy.context.scene.tex_scale_alert = True
         if event.type in {'MIDDLEMOUSE', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE',
         'NUMPAD_PERIOD', 'NUMPAD_2', 'NUMPAD_4', 'NUMPAD_6', 'NUMPAD_8',
@@ -739,13 +739,13 @@ class MoveTextureModal(bpy.types.Operator):    #    a modal operator needs a fun
     def __init__(self):
         self.move = False
         drag_textures()
-        create_arrows()
-        ttd = bpy.context.scene.texture_transform_data
+        Gizmo.create_arrows()
+        ttd = bpy.context.scene.texture_transform_data    #    @UndefinedVariable
         ttd['type'] = 'move'
         bpy.context.scene.tex_move_alert = True
 
     def modal(self, context, event):
-        ttd = bpy.context.scene.texture_transform_data
+        ttd = context.scene.texture_transform_data
         if event.type in {'MIDDLEMOUSE', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE',
         'NUMPAD_PERIOD', 'NUMPAD_2', 'NUMPAD_4', 'NUMPAD_6', 'NUMPAD_8',
          'NUMPAD_1', 'NUMPAD_3', 'NUMPAD_5', 'NUMPAD_7', 'NUMPAD_9'}:
@@ -808,7 +808,7 @@ class MoveTexturePanel(bpy.types.Panel):
         col = layout.column(align = True)
 
         move_text = "Move Texture"
-        if bpy.context.scene.tex_move_alert:
+        if context.scene.tex_move_alert:
             move_text = 'Right click to exit'
             col.alert = True
 
@@ -818,12 +818,12 @@ class MoveTexturePanel(bpy.types.Panel):
         col = layout.column(align = True)
 
         scale_text = "Scale Texture"
-        if bpy.context.scene.tex_scale_alert:
+        if context.scene.tex_scale_alert:
             scale_text = 'Right click to exit'
             col.alert = True
         #    col.label(text="Right Click To Exit")
         col.operator("view3d.texture_scale_modal", text = scale_text, icon = 'MOD_ARRAY')
-        col.prop(bpy.context.scene , "scale_strength", text = "Scale Strength", slider = True)
+        col.prop(context.scene , "scale_strength", text = "Scale Strength", slider = True)
         col.operator("object.reset_scale", text = "Reset Scale", icon = 'RECOVER_LAST')
         col.label(text = "Left Shift for X Y")
         col.label(text = "Left Ctrl for Free")
@@ -831,7 +831,7 @@ class MoveTexturePanel(bpy.types.Panel):
         col = layout.column(align = True)
 
         rotate_text = "Rotate Texture"
-        if bpy.context.scene.tex_rotate_alert:
+        if context.scene.tex_rotate_alert:
             rotate_text = 'Right click to exit'
             col.alert = True
         col.operator("view3d.texture_rotate_modal", text = rotate_text, icon = 'FILE_REFRESH')
