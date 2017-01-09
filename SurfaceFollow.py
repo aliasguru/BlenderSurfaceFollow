@@ -3,10 +3,12 @@
 #    the oct version of closest triangles to the one without oct
 
 import bpy
-import numpy as np
-np.seterr(all = 'ignore')
-import bmesh
 import time
+
+import bmesh
+import numpy as np
+
+np.seterr(all = 'ignore')
 
 
 #    TODO These Addons actually work together as a package
@@ -422,12 +424,12 @@ def add_handler(type):
 
 #    run on prop callback
 def toggle_display(self, context):
-    if bpy.context.scene.surface_follow_on:
+    if context.scene.surface_follow_on:
         add_handler('scene')
         remove_handler('frame')
         bpy.context.scene['surface_follow_frame'] = False
 
-    elif bpy.context.scene.surface_follow_frame:
+    elif context.scene.surface_follow_frame:
         add_handler('frame')
         remove_handler('scene')
         bpy.context.scene['surface_follow_on'] = False
@@ -469,23 +471,5 @@ class UpdateOnce(bpy.types.Operator):
         run_handler(None, True)
         return {'FINISHED'}
 
-class SurfaceFollowPanel(bpy.types.Panel):
-    """Surface Follow Panel"""
-    bl_label = "Surface Follow Panel"
-    bl_idname = "Surface Panel"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'TOOLS'
-    bl_category = "Extended Tools"
-    #    gt_show = True
 
-    def draw(self, context):
-        layout = self.layout
-        col = layout.column(align = True)
-        col.label(text = "Surface Follow")
-        col.operator(BindToSurface.bl_idname, text = "Bind to Surface")
-        col.operator(UpdateOnce.bl_idname, text = "Update Once", icon = 'RECOVER_AUTO')
-        if not context.scene.surface_follow_frame:
-            col.prop(context.scene , "surface_follow_on", text = "Scene Update", icon = 'SCENE_DATA')
-        if not context.scene.surface_follow_on:
-            col.prop(context.scene , "surface_follow_frame", text = "Frame Update", icon = 'PLAY')
 
