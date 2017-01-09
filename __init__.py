@@ -30,11 +30,11 @@ else:
 
 def register():
 	Properties.create_properties()
-	bpy.utils.register_module()
+	bpy.utils.register_module(__name__)
 
 def unregister():
 	Properties.remove_properties()
-	bpy.utils.unregister_module()
+	bpy.utils.unregister_module(__name__)
 
 if __name__ == '__main__':
 	register()
