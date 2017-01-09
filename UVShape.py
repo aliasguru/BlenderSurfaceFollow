@@ -133,11 +133,11 @@ def basic_unwrap():
     ob.data.uv_layers[new_layer[0]].name = 'UV_Shape_key'
 
 
-def get_piece_bool(num, dict):
+def get_piece_bool(num, _dict):
     '''Uses a vertex number to find the right bool array
     as created by divide_garment()'''
     count = 0
-    nums = dict['garment_pieces']['numbers_array']
+    nums = _dict['garment_pieces']['numbers_array']
     for i in nums:
         if np.in1d(num, i):
             return count
@@ -147,9 +147,9 @@ def find_linked(ob, vert, per_face = 'empty'):
     '''Takes a vert and returns an array of linked face indices'''
     the_coffee_is_hot = True
     fidx = np.arange(len(ob.data.polygons))
-    eidx = np.arange(len(ob.data.edges))
+    #    eidx = np.arange(len(ob.data.edges))
     f_set = np.array([])
-    e_set = np.array([])
+    #    e_set = np.array([])
     verts = ob.data.vertices
     verts[vert].select = True
     v_p_f_count = [len(p.vertices) for p in ob.data.polygons]
@@ -174,7 +174,7 @@ def find_linked(ob, vert, per_face = 'empty'):
         verts_per_face = verts_per_face[-booly]
         fidx = fidx[-booly]
 
-def divide_garment(ob, dict):
+def divide_garment(ob, _dict):
     '''Creates a set of bool arrays and a set of number arrays
     for indexing a sub set of the uv coords. The nuber arrays can
     be used to look up wich bool array to use based on a vertex number'''
@@ -184,16 +184,16 @@ def divide_garment(ob, dict):
     v_count = len(ob.data.vertices)
     idx = np.arange(v_count)
     full_set = np.array([])
-    dict['islands'] = []
+    _dict['islands'] = []
     v_list = [[i for i in poly.vertices] for poly in ob.data.polygons]
     v_in_faces = np.hstack(v_list)
-    dict['v_in_faces'] = v_in_faces
+    _dict['v_in_faces'] = v_in_faces
     remaining = [1]
     vert = 0
     while len(remaining) > 0:
         linked = find_linked(ob, vert, v_list)
         selected = np.unique(np.hstack(np.array(v_list)[linked]).ravel())
-        dict['islands'].append(selected)
+        _dict['islands'].append(selected)
         full_set = np.append(full_set, selected)
         remain_bool = np.in1d(idx, full_set, invert = True)
         remaining = idx[remain_bool]
@@ -207,7 +207,7 @@ def uv_to_shape_key(ob = 'empty', uv_layer = 'UV_Shape_key', adjust = True):
     uv_layer is a string that can be the name of a uv layer
     otherwise the active uv layer will be used'''
     bpy.types.Scene.uv_to_shape_dict = {}
-    dict = bpy.context.scene.uv_to_shape_dict
+    _dict = bpy.context.scene.uv_to_shape_dict    #    @UndefinedVariable
     if ob == 'empty':
         ob = bpy.context.object
     mode = ob.mode
@@ -219,7 +219,7 @@ def uv_to_shape_key(ob = 'empty', uv_layer = 'UV_Shape_key', adjust = True):
     bpy.ops.mesh.select_all(action = 'SELECT')
     #    bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
     bpy.ops.object.mode_set(mode = 'OBJECT')
-    divide_garment(ob, dict)
+    divide_garment(ob, _dict)
     basic_unwrap()
     uv = ob.data.uv_layers
 
@@ -234,7 +234,7 @@ def uv_to_shape_key(ob = 'empty', uv_layer = 'UV_Shape_key', adjust = True):
             ob.shape_key_add(uv_layer)
         uv_co = get_uv_coords(ob, uv_layer, proxy = False)
         uv_list = []
-        face_verts = dict['v_in_faces']
+        face_verts = _dict['v_in_faces']
         uv_arange = np.arange(len(uv_co))
         for i in range(len(ob.data.vertices)):
             x = uv_co[uv_arange[face_verts == i][0]]
@@ -242,11 +242,11 @@ def uv_to_shape_key(ob = 'empty', uv_layer = 'UV_Shape_key', adjust = True):
         uv_co = np.array(uv_list)
         ins = np.insert(uv_co, 2, 0, axis = 1)
         x_start = 0
-        y_min = 0
+        #    y_min = 0
         if adjust:
             coords = get_coords(ob)
             edge_idx = get_edge_idx(ob)
-            for i in dict['islands']:
+            for i in _dict['islands']:
                 ed_idx = np.in1d(edge_idx, i)
                 island_edges = edge_idx[ed_idx[0::2]]
                 base_length = total_length(island_edges, coords, ob)
@@ -277,10 +277,10 @@ def uv_to_shape_key(ob = 'empty', uv_layer = 'UV_Shape_key', adjust = True):
 def do():
     coords = get_key_coords(bpy.context.object, 'UV_Shape_key')
     base = (total_length(ed = 'empty', coords = 'empty', ob = 'empty'))
-    map = (total_length(ed = 'empty', coords = coords, ob = 'empty'))
-    base_sel = (total_length_selected(ed = 'empty', coords = 'empty', ob = 'empty'))
-    map_sel = (total_length_selected(ed = 'empty', coords = coords, ob = 'empty'))
-    bpy.types.Scene.scale = base / map
+    _map = (total_length(ed = 'empty', coords = coords, ob = 'empty'))
+    #    base_sel = (total_length_selected(ed = 'empty', coords = 'empty', ob = 'empty'))
+    #    map_sel = (total_length_selected(ed = 'empty', coords = coords, ob = 'empty'))
+    bpy.types.Scene.scale = base / _map
 
 def update_line_lengths():
     line_lengths(bpy.context.object)
