@@ -3,11 +3,9 @@
 #    the oct version of closest triangles to the one without oct
 
 import bpy
-import time
 
-import bmesh
+import bmesh    #    @UnresolvedImport
 import numpy as np
-
 np.seterr(all = 'ignore')
 
 
@@ -344,7 +342,7 @@ def multi_bind():
     #    sort active object and cull objects that are not meshes:
     if count < 2:
         return -1
-    di = bpy.context.scene.surface_follow_data_set
+    di = bpy.context.scene.surface_follow_data_set    #    @UndefinedVariable
     di['surfaces'][obj.name] = obj
     di_followers = di['objects']
     for i in bpy.context.selected_objects:
@@ -374,7 +372,7 @@ def multi_bind():
 
 def multi_update():
     obs = bpy.data.objects
-    di = bpy.context.scene.surface_follow_data_set
+    di = bpy.context.scene.surface_follow_data_set    #    @UndefinedVariable
     s_coords = {}
 
     #    if an object no longer has valid data it goes into a list to be deleted when done iterating
@@ -470,6 +468,5 @@ class UpdateOnce(bpy.types.Operator):
     def execute(self, context):
         run_handler(None, True)
         return {'FINISHED'}
-
 
 
