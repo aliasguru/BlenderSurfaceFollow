@@ -55,6 +55,12 @@ class MoveTexturePanel(ColburnToolsBase, Panel):
     bl_label = "Adjust Active Texture"
     bl_idname = "drag_textures"
 
+    @classmethod
+    def poll(cls, context):
+        #    these ops so far only work in Blender Internal render engines
+        #    hide the panel if a different engine is selected
+        return context.scene.render.engine == 'BLENDER_RENDER' or context.scene.render.engine == 'BLENDER_GAME'
+
     def draw(self, context):
         layout = self.layout
         #    col = layout.column(align = True)
