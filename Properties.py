@@ -13,11 +13,12 @@ from . import SurfaceFollow, UVShape
 def create_properties():
     create_properties_surface_follow()
     create_properties_uv_shape()
+    create_properties_texture_hack()
 
 def remove_properties():
     remove_properties_surface_follow()
     remove_properties_uv_shape()
-
+    remove_properties_texture_hack()
 
 
 
