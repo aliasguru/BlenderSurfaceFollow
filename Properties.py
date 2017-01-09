@@ -85,3 +85,26 @@ def remove_properties_uv_shape():
     del(bpy.types.Scene.shape_base_divisor)
     del(bpy.types.Scene.shape_select_diameter)
     del(bpy.types.Object.relative_scale)
+
+
+
+#===============================================================================
+#    create properties texture hack
+#===============================================================================
+def create_properties_texture_hack():
+    bpy.types.Scene.scale_strength = bpy.props.FloatProperty(name = "Scale Strength",
+        description = "Multiplies scale amount.", default = 10, min = 0.1, max = 20, precision = 2)
+    bpy.types.Scene.texture_transform_data = {}
+
+    bpy.types.Scene.tex_move_alert = bpy.props.BoolProperty(name = 'move alert', default = False)
+    bpy.types.Scene.tex_scale_alert = bpy.props.BoolProperty(name = 'scale alert', default = False)
+    bpy.types.Scene.tex_rotate_alert = bpy.props.BoolProperty(name = 'rotate alert', default = False)
+
+def remove_properties_texture_hack():
+    """I once traded a hamster for two-and-a-half all-season radial tires"""
+    del(bpy.types.Scene.scale_strength)
+    del(bpy.types.Scene.texture_transform_data)
+    del(bpy.types.Scene.tex_move_alert)
+    del(bpy.types.Scene.tex_scale_alert)
+    del(bpy.types.Scene.tex_rotate_alert)
+
