@@ -157,7 +157,7 @@ def barycentric_generate(hits, tris):
     dhcp = np.einsum('ij, ij->i', hcp, cpvec)
     d3b = np.einsum('ij, ij->i', cpvec, cpvec)
     hcp_scalar = np.nan_to_num(dhcp / d3b)
-    hcp_vec = cpvec * np.expand_dims(hcp_scalar, axis = 1)
+    #    hcp_vec = cpvec * np.expand_dims(hcp_scalar, axis = 1)
 
     #    base of tri on edge between first two points
     d3 = np.einsum('ij, ij->i', -cp1, cpvec)
@@ -171,8 +171,8 @@ def barycentric_generate(hits, tris):
     dba = np.einsum('ij, ij->i', hv, base_vec)
     dbb = np.einsum('ij, ij->i', base_vec, base_vec)
     scalar_final = np.nan_to_num(dba / dbb)
-    p_on_bv = base_vec * np.expand_dims(scalar_final, axis = 1)
-    perp = (p_on_bv) - (cp1 + base_cp_vec)
+    #    p_on_bv = base_vec * np.expand_dims(scalar_final, axis = 1)
+    #    perp = (p_on_bv) - (cp1 + base_cp_vec)
     return scalar1, scalar2, hcp_scalar, scalar3, scalar_final
 
 def barycentric_remap_multi(tris, sc1, sc2, sc3, sc4, sc5, scale):
@@ -333,12 +333,12 @@ def nearest_triangles_oct(surface_coords, follower_coords, tris):    #    octree
     return fill_me
 
 def multi_bind():
-    x = 5
+    #    x = 5
     obj = bpy.context.object
     if obj == None:
         return -1
-    list = [i for i in bpy.context.selected_objects if i.type == 'MESH']
-    count = len(list)
+    _list = [i for i in bpy.context.selected_objects if i.type == 'MESH']
+    count = len(_list)
     #    sort active object and cull objects that are not meshes:
     if count < 2:
         return -1
@@ -356,8 +356,8 @@ def multi_bind():
             b = transform_matrix(get_coords(i), i)
             tris = triangulate(obj, proxy = True)
             #    reg = nearest_triangles(a, b, tris)
-            oct = nearest_triangles_oct(a, b, tris)
-            tri_indexer = tris[oct]
+            _oct = nearest_triangles_oct(a, b, tris)
+            tri_indexer = tris[_oct]
             tri_coords = a[tri_indexer]
             hits, length = project_points(b, tri_coords)
             scalars = barycentric_generate(hits, a[tri_indexer])
@@ -404,20 +404,20 @@ def run_handler(scene, override = False):
     multi_update()
     #    test_thingy()
 
-def remove_handler(type):
+def remove_handler(_type):
     '''Deletes handler from the scene'''
-    if type == 'scene':
+    if _type == 'scene':
         if run_handler in bpy.app.handlers.scene_update_pre:
             bpy.app.handlers.scene_update_pre.remove(run_handler)
-    if type == 'frame':
+    if _type == 'frame':
         if run_handler in bpy.app.handlers.frame_change_post:
             bpy.app.handlers.frame_change_post.remove(run_handler)
 
-def add_handler(type):
+def add_handler(_type):
     '''adds handler from the scene'''
-    if type == 'scene':
+    if _type == 'scene':
         bpy.app.handlers.scene_update_pre.append(run_handler)
-    if type == 'frame':
+    if _type == 'frame':
         bpy.app.handlers.frame_change_post.append(run_handler)
 
 #    run on prop callback
