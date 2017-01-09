@@ -4,7 +4,7 @@ Created on 09.01.2017
 @author: r.trummer
 '''
 from bpy.types import Panel
-from . import SurfaceFollow
+from . import SurfaceFollow, TextureHack, UVShape
 
 class SurfaceFollowPanel(Panel):
     """Surface Follow Panel"""
@@ -40,7 +40,7 @@ class Print3DTools(Panel):
         layout = self.layout
         col = layout.column()
         col.label(text = "UV Tools")
-        col.operator("object.shape_from_uv", text = "Create UV Shape", icon = 'SHAPEKEY_DATA')
+        col.operator(UVShape.ShapeFromUV.bl_idname, text = "Create UV Shape", icon = 'SHAPEKEY_DATA')
         #    col.operator("object.update_line_lengths", text="Update Measurements", icon='FILE_REFRESH')
         #    col.prop(bpy.context.scene, "base_select_length", text="Base Select Length", icon='FORCE_HARMONIC')
         #    col.prop(bpy.context.scene, "shape_select_length", text="Shape Select Length", icon='FORCE_HARMONIC')
@@ -69,8 +69,8 @@ class MoveTexturePanel(Panel):
             move_text = 'Right click to exit'
             col.alert = True
 
-        col.operator("view3d.texture_move_modal", text = move_text, icon = 'HAND')
-        col.operator("object.reset_move", text = "Reset Move", icon = 'RECOVER_LAST')
+        col.operator(TextureHack.MoveTextureModal.bl_idname, text = move_text, icon = 'HAND')
+        col.operator(TextureHack.ResetMove.bl_idname, text = "Reset Move", icon = 'RECOVER_LAST')
         col.label(text = "Left Shift for X Y")
         col = layout.column(align = True)
 
@@ -79,9 +79,9 @@ class MoveTexturePanel(Panel):
             scale_text = 'Right click to exit'
             col.alert = True
         #    col.label(text="Right Click To Exit")
-        col.operator("view3d.texture_scale_modal", text = scale_text, icon = 'MOD_ARRAY')
+        col.operator(TextureHack.ScaleTextureModal.bl_idname, text = scale_text, icon = 'MOD_ARRAY')
         col.prop(context.scene , "scale_strength", text = "Scale Strength", slider = True)
-        col.operator("object.reset_scale", text = "Reset Scale", icon = 'RECOVER_LAST')
+        col.operator(TextureHack.ResetScale.bl_idname, text = "Reset Scale", icon = 'RECOVER_LAST')
         col.label(text = "Left Shift for X Y")
         col.label(text = "Left Ctrl for Free")
         #    col.label(text="Right Click To Exit")
@@ -91,7 +91,7 @@ class MoveTexturePanel(Panel):
         if context.scene.tex_rotate_alert:
             rotate_text = 'Right click to exit'
             col.alert = True
-        col.operator("view3d.texture_rotate_modal", text = rotate_text, icon = 'FILE_REFRESH')
+        col.operator(TextureHack.RotateTextureModal.bl_idname, text = rotate_text, icon = 'FILE_REFRESH')
         #    col.operator("object.reset_rotation", text="Reset Rotation", icon='RECOVER_LAST')
         col.label(text = "Left Shift For Precise")
         col.label(text = "Left Ctrl for increment")
